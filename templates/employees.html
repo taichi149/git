@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>员工总览 - 美体商城员工管理系统</title>
+</head>
+<body>
+    <h1>员工总览</h1>
+    <p><a href="/">返回首页</a></p>
+    <table border="1" cellpadding="6" cellspacing="0">
+        <thead>
+            <tr>
+                <th>员工ID</th>
+                <th>姓名</th>
+                <th>年龄</th>
+                <th>岗位</th>
+                <th>部门</th>
+                <th>邮箱</th>
+                <th>薪资</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for e in employees %}
+            <tr>
+                <td>{{ e.employee_id }}</td>
+                <td>{{ e.name }}</td>
+                <td>{{ e.age }}</td>
+                <td>{{ e.position }}</td>
+                <td>{{ e.department }}</td>
+                <td>{{ e.email }}</td>
+                <td>{{ e.salary }}</td>
+            </tr>
+            {% else %}
+            <tr><td colspan="7">暂无员工记录</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

@@ -1,7 +1,15 @@
+# Python
+.venv/
 venv/
-  __pycache__/
-  *.pyc
-  *.pyo
-  .idea/
+__pycache__/
+*.py[cod]
+*.pyo
+*.so
 
-  ---
+# IDE
+.idea/
+.vscode/
+
+# 日志与临时文件
+*.log
+.DS_Store
