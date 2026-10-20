@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}{{ employee.name }} - 员工详情{% endblock %}
+
+{% block content %}
+<h1>
+    员工详情
+    {% if employee.is_archived %}
+    <span class="tag tag-off">已归档</span>
+    {% else %}
+    <span class="tag tag-ok">在职</span>
+    {% endif %}
+</h1>
+
+<div class="card">
+    <dl class="detail">
+        <dt>工号</dt><dd>{{ employee.employee_id }}</dd>
+        <dt>姓名</dt><dd>{{ employee.name }}</dd>
+        <dt>年龄</dt><dd>{{ employee.age if employee.age is not none else '-' }}</dd>
+        <dt>岗位</dt><dd>{{ employee.position or '-' }}</dd>
+        <dt>部门</dt><dd>{{ employee.department or '-' }}</dd>
+        <dt>薪资</dt>
+        <dd>
+            {% if employee.salary is not none %}
+            ￥{{ '%.2f'|format(employee.salary) }}
+            {% else %}-{% endif %}
+        </dd>
+        <dt>邮箱</dt><dd>{{ employee.email or '-' }}</dd>
+        <dt>联系地址</dt><dd>{{ employee.contact_address or '-' }}</dd>
+        <dt>紧急联系人</dt><dd>{{ employee.emergency_contact or '-' }}</dd>
+    </dl>
+
+    <div class="actions-row">
+        <a class="btn" href="{{ url_for('ui.employee_list') }}">← 返回列表</a>
+        {% if can_edit and not employee.is_archived %}
+        <a class="btn btn-primary" href="{{ url_for('ui.employee_edit', emp_pk=employee.id) }}">编辑</a>
+        <a class="btn btn-danger" href="{{ url_for('ui.employee_archive', emp_pk=employee.id) }}">归档</a>
+        {% endif %}
+        {% if can_edit and employee.is_archived %}
+        <form method="post" action="{{ url_for('ui.employee_restore', emp_pk=employee.id) }}">
+            <button class="btn" type="submit">恢复为在职</button>
+        </form>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% block title %}{% if mode == 'new' %}新增员工{% else %}编辑员工{% endif %} - 美体商城员工管理系统{% endblock %}
+
+{% block content %}
+<h1>{% if mode == 'new' %}新增员工{% else %}编辑员工{% endif %}</h1>
+
+<form method="post"
+      action="{% if mode == 'new' %}{{ url_for('ui.employee_new') }}{% else %}{{ url_for('ui.employee_edit', emp_pk=emp_pk) }}{% endif %}">
+    <div class="card">
+        <div class="form-grid">
+            <div class="field req">
+                <label for="employee_id">工号</label>
+                <input id="employee_id" type="text" name="employee_id" maxlength="20"
+                       value="{{ form.employee_id }}" autocomplete="off">
+                {% if errors.employee_id %}<div class="err">{{ errors.employee_id }}</div>{% endif %}
+            </div>
+
+            <div class="field req">
+                <label for="name">姓名</label>
+                <input id="name" type="text" name="name" maxlength="50"
+                       value="{{ form.name }}" autocomplete="off">
+                {% if errors.name %}<div class="err">{{ errors.name }}</div>{% endif %}
+            </div>
+
+            <div class="field">
+                <label for="age">年龄</label>
+                <input id="age" type="number" name="age" min="16" max="100"
+                       value="{{ form.age if form.age is not none else '' }}">
+                {% if errors.age %}<div class="err">{{ errors.age }}</div>{% endif %}
+            </div>
+
+            <div class="field">
+                <label for="salary">薪资（月薪，元）</label>
+                <input id="salary" type="number" name="salary" step="0.01" min="0"
+                       value="{{ form.salary if form.salary is not none else '' }}">
+                {% if errors.salary %}<div class="err">{{ errors.salary }}</div>{% endif %}
+            </div>
+
+            <div class="field">
+                <label for="position">岗位</label>
+                <input id="position" type="text" name="position" maxlength="100"
+                       value="{{ form.position }}">
+                {% if errors.position %}<div class="err">{{ errors.position }}</div>{% endif %}
+            </div>
+
+            <div class="field">
+                <label for="department">部门</label>
+                <input id="department" type="text" name="department" maxlength="100"
+                       value="{{ form.department }}">
+                {% if errors.department %}<div class="err">{{ errors.department }}</div>{% endif %}
+            </div>
+
+            <div class="field">
+                <label for="email">邮箱</label>
+                <input id="email" type="email" name="email" maxlength="100"
+                       value="{{ form.email }}">
+                {% if errors.email %}<div class="err">{{ errors.email }}</div>{% endif %}
+            </div>
+
+            <div class="field">
+                <label for="emergency_contact">紧急联系人</label>
+                <input id="emergency_contact" type="text" name="emergency_contact" maxlength="100"
+                       value="{{ form.emergency_contact }}">
+                {% if errors.emergency_contact %}<div class="err">{{ errors.emergency_contact }}</div>{% endif %}
+            </div>
+
+            <div class="field" style="grid-column: 1 / -1;">
+                <label for="contact_address">联系地址</label>
+                <input id="contact_address" type="text" name="contact_address" maxlength="100"
+                       value="{{ form.contact_address }}">
+                {% if errors.contact_address %}<div class="err">{{ errors.contact_address }}</div>{% endif %}
+            </div>
+        </div>
+
+        <div class="actions-row">
+            <button class="btn btn-primary" type="submit">保存</button>
+            <a class="btn" href="{% if mode == 'new' %}{{ url_for('ui.employee_list') }}{% else %}{{ url_for('ui.employee_detail', emp_pk=emp_pk) }}{% endif %}">取消</a>
+        </div>
+    </div>
+</form>
+{% endblock %}
