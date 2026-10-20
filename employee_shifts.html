@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% block title %}{{ employee.name }}的排班 - 美体商城员工管理系统{% endblock %}
+
+{% block content %}
+<h1>
+    {{ employee.name }} 的排班
+    <span class="muted" style="font-size: 14px;">{{ employee.employee_id }}</span>
+    {% if employee.is_archived %}<span class="tag tag-off">已归档</span>{% endif %}
+</h1>
+
+<div class="toolbar">
+    <div class="week-nav">
+        <a class="btn" href="{{ url_for('ui.employee_shifts', emp_pk=employee.id, week=prev_week) }}">← 上一周</a>
+        <a class="btn" href="{{ url_for('ui.employee_shifts', emp_pk=employee.id, week=this_week) }}">本周</a>
+        <a class="btn" href="{{ url_for('ui.employee_shifts', emp_pk=employee.id, week=next_week) }}">下一周 →</a>
+    </div>
+    <span class="muted">{{ monday }} ~ {{ sunday }}</span>
+    <div class="spacer"></div>
+    {% if can_edit and not employee.is_archived %}
+    <a class="btn btn-primary" href="{{ url_for('ui.shift_assign', emp_pk=employee.id) }}">+ 给 TA 排班</a>
+    {% endif %}
+    <a class="btn" href="{{ url_for('ui.shifts_week', week=monday.isoformat()) }}">全店排班</a>
+</div>
+
+<div class="card" style="padding: 0; overflow: hidden;">
+    <table>
+        <thead>
+            <tr>
+                {% for day in days %}
+                <th>{{ weekdays_cn[loop.index0] }}<br>{{ day.strftime('%m-%d') }}</th>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                {% for day in days %}
+                <td class="shift-cell">
+                    {% set s = cells.get(day) %}
+                    {% if s %}
+                    <span class="tag tag-{{ s.shift_type }}">{{ labels[s.shift_type] }}</span>
+                    {% if can_edit %}
+                    <form method="post" action="{{ url_for('ui.shift_delete', shift_id=s.id) }}">
+                        <input type="hidden" name="next"
+                               value="{{ url_for('ui.employee_shifts', emp_pk=employee.id, week=monday.isoformat()) }}">
+                        <button class="link-del" type="submit" title="删除这条排班">×</button>
+                    </form>
+                    {% endif %}
+                    {% else %}
+                    <span class="muted">休息</span>
+                    {% endif %}
+                </td>
+                {% endfor %}
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<p class="muted" style="margin-top: 12px;">
+    本周共排班 {{ cells|length }} 天。
+    {% if employee.is_archived %}该员工已归档，历史排班保留仅供查看，不能再排新班。{% endif %}
+</p>
+{% endblock %}

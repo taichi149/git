@@ -48,7 +48,8 @@
         }
         .toolbar { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; margin-bottom: 16px; }
         .toolbar .spacer { flex: 1; }
-        input[type="text"], input[type="number"], input[type="email"], input[type="password"] {
+        input[type="text"], input[type="number"], input[type="email"], input[type="password"],
+        input[type="date"], select {
             height: 34px;
             padding: 0 10px;
             border: 1px solid var(--line);
@@ -103,6 +104,16 @@
         .tag { display: inline-block; padding: 1px 8px; border-radius: 10px; font-size: 12px; }
         .tag-ok { background: #eef8f2; color: #1f7a4c; }
         .tag-off { background: #f1f2f4; color: #6b7280; }
+        /* M4 排班：三种班次各一个颜色，一眼区分开 */
+        .tag-Morning { background: #fff7e6; color: #ad6800; }
+        .tag-Afternoon { background: #e6f4ff; color: #0958d9; }
+        .tag-Evening { background: #f9f0ff; color: #531dab; }
+        .shift-cell { min-width: 96px; }
+        .shift-cell form { display: inline; }
+        .link-del { border: none; background: none; color: var(--muted); cursor: pointer; font-size: 12px; padding: 0 2px; }
+        .link-del:hover { color: var(--danger); }
+        .week-nav { display: flex; gap: 8px; align-items: center; }
+        .field select { width: 100%; }
         .warn-box { border: 1px solid #f3c9c9; background: #fdf0f0; border-radius: 8px; padding: 14px 16px; margin-bottom: 18px; }
     </style>
 </head>
@@ -111,8 +122,10 @@
     <div class="brand">美体商城 · 员工管理系统</div>
     <nav>
         <a href="{{ url_for('ui.employee_list') }}">员工列表</a>
+        <a href="{{ url_for('ui.shifts_week') }}">全店排班</a>
         {% if session.get('role') == 'HRAdmin' %}
         <a href="{{ url_for('ui.employee_new') }}">新增员工</a>
+        <a href="{{ url_for('ui.shift_assign') }}">排班</a>
         {% endif %}
     </nav>
     <div class="me">

@@ -58,6 +58,7 @@
                 <td>{{ '%.2f'|format(e.salary) if e.salary is not none else '-' }}</td>
                 <td class="actions">
                     <a class="btn btn-sm" href="{{ url_for('ui.employee_detail', emp_pk=e.id) }}">详情</a>
+                    <a class="btn btn-sm" href="{{ url_for('ui.employee_shifts', emp_pk=e.id) }}">排班</a>
                     {% if can_edit %}
                         {% if archived %}
                         <form method="post" action="{{ url_for('ui.employee_restore', emp_pk=e.id) }}">
