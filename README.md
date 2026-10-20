@@ -1,15 +1,15 @@
 [README.md](https://github.com/user-attachments/files/33721220/README.md)
-# 美体商城行政管理系统
+# 媒体商城行政管理系统
 
 **Meítǐ Shāngchéng Administrative System — 员工 · 排班 · 库存一体化后台**
 
-> 为「美体商城」（Meítǐ Shāngchéng）郑州首店定制的行政管理系统。
+> 为「媒体商城」（Meítǐ Shāngchéng）郑州首店定制的行政管理系统。
 > 母公司 Jupiter 出资，门店管理层希望通过一套系统把**员工档案、排班、库存**管起来，
 > 替代目前「Excel + 在线日历」这种过于零散、不可靠的做法。
 
 | 项目 | 内容 |
 |---|---|
-| 客户 | 美体商城（Meítǐ Shāngchéng），母公司 Jupiter |
+| 客户 | 媒体商城（Meítǐ Shāngchéng），母公司 Jupiter |
 | 客户代表 | Henriette（门店经理） |
 | 团队代表 | James |
 | 开发方法 | 瀑布模型（Waterfall）+ 后期迭代（Iterative） |
@@ -44,7 +44,7 @@
 
 ### 客户现状
 
-美体商城是 Jupiter 旗下新开的五金门店，正在郑州筹备**第一家门店**。公司管理层认为，行政（administration）是支撑整个公司运转的骨干，因此希望在开业前就有一套可用的行政系统。
+媒体商城是 Jupiter 旗下新开的五金门店，正在郑州筹备**第一家门店**。公司管理层认为，行政（administration）是支撑整个公司运转的骨干，因此希望在开业前就有一套可用的行政系统。
 
 目前 Jupiter 旗下部分门店使用**在线日历或 Excel 表格**管理员工与排班，问题是「太细碎、不可靠」——数据分散、容易出错、无法按人/按店统一查看。
 
