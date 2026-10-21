@@ -2,12 +2,30 @@
 <html lang="zh">
 <head>
     <meta charset="UTF-8">
-    <title>我的主页 - 美体商城员工管理系统</title>
+    <title>我的档案 - 美体商城员工管理系统</title>
 </head>
 <body>
-    <h1>我的主页</h1>
-    <p>欢迎，{{ username }}（角色：{{ role }}）</p>
-    <p>个人档案与排班功能将在后续里程碑实现。</p>
+    <h1>我的档案</h1>
+    {% if error %}<p style="color:red">{{ error }}</p>{% endif %}
+    {% if success %}<p style="color:green">{{ success }}</p>{% endif %}
+
+    <table border="1" cellpadding="6">
+        <tr><td>员工ID</td><td>{{ employee.employee_id }}</td></tr>
+        <tr><td>姓名</td><td>{{ employee.name }}</td></tr>
+        <tr><td>年龄</td><td>{{ employee.age }}</td></tr>
+        <tr><td>岗位</td><td>{{ employee.position }}</td></tr>
+        <tr><td>部门</td><td>{{ employee.department }}</td></tr>
+    </table>
+    <p style="color:#888">薪资不向员工展示；岗位、部门为只读。</p>
+
+    <h2>可修改信息</h2>
+    <form method="post">
+        <p>邮箱：<input type="text" name="email" value="{{ employee.email or '' }}"></p>
+        <p>联系地址：<input type="text" name="contact_address" value="{{ employee.contact_address or '' }}"></p>
+        <p>紧急联系人：<input type="text" name="emergency_contact" value="{{ employee.emergency_contact or '' }}"></p>
+        <p><button type="submit">保存修改</button></p>
+    </form>
+
     <p><a href="/logout">退出登录</a></p>
 </body>
 </html>

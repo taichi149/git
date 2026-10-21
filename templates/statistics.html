@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>员工统计 - 美体商城员工管理系统</title>
+</head>
+<body>
+    <h1>员工统计</h1>
+    <p>员工总人数：<strong>{{ total }}</strong></p>
+
+    <h2>分部门人数</h2>
+    <table border="1" cellpadding="6">
+        <tr><th>部门</th><th>人数</th></tr>
+        {% for dept, cnt in by_dept %}
+        <tr><td>{{ dept or '未分配' }}</td><td>{{ cnt }}</td></tr>
+        {% else %}
+        <tr><td colspan="2">暂无员工数据</td></tr>
+        {% endfor %}
+    </table>
+
+    <p><a href="/employees">返回员工列表</a> | <a href="/logout">退出登录</a></p>
+</body>
+</html>

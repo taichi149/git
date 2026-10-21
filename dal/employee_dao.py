@@ -8,7 +8,7 @@ from model.employee import Employee
 
 
 class EmployeeDAO:
-    """员工表的数据访问对象（M3：增 / 改 / 软归档 / 检索 / 详情）。"""
+    """员工表的数据访问对象（M3 增删改查 + M5 统计/自助）。"""
 
     # ------------------------------------------------------------------
     # 查询
@@ -96,6 +96,26 @@ class EmployeeDAO:
             conn.close()
 
     @staticmethod
+    def get_by_username(username):
+        """
+        按登录用户名查员工（约定：员工登录账号 = 邮箱 @ 前缀，如 zhangsan ↔ zhangsan@meiti.com）。
+        对应 FR14（查看本人档案）/ FR15（修改个人信息）。找不到返回 None。
+        """
+        sql = (
+            "SELECT id, employee_id, name, age, position, salary, department, "
+            "email, contact_address, emergency_contact, is_archived "
+            "FROM employee WHERE email LIKE %s AND is_archived = %s LIMIT 1"
+        )
+        conn = get_connection()
+        try:
+            with conn.cursor() as cur:
+                cur.execute(sql, (username + "@%", 0))  # 参数化查询
+                row = cur.fetchone()
+            return Employee(*row) if row else None
+        finally:
+            conn.close()
+
+    @staticmethod
     def employee_id_exists(employee_id, exclude_pk=None):
         """
         校验工号是否已被占用（新增 / 修改时用）。
@@ -153,6 +173,24 @@ class EmployeeDAO:
             conn.close()
 
     @staticmethod
+    def update_self(employee_id, email, contact_address, emergency_contact):
+        """
+        员工自助修改邮箱 / 联系地址 / 紧急联系人（FR15）。
+        薪资、岗位、部门不在本方法更新——员工无权修改。
+        """
+        sql = (
+            "UPDATE employee SET email = %s, contact_address = %s, "
+            "emergency_contact = %s WHERE id = %s"
+        )
+        conn = get_connection()
+        try:
+            with conn.cursor() as cur:
+                cur.execute(sql, (email, contact_address, emergency_contact, employee_id))
+            conn.commit()
+        finally:
+            conn.close()
+
+    @staticmethod
     def update(employee):
         """
         FR02 修改员工：按主键更新档案字段（不动 is_archived）。
@@ -200,5 +238,29 @@ class EmployeeDAO:
                 affected = cur.rowcount
             conn.commit()
             return affected
+        finally:
+            conn.close()
+
+    # ------------------------------------------------------------------
+    # 统计
+    # ------------------------------------------------------------------
+    @staticmethod
+    def get_statistics():
+        """
+        统计（FR12）：员工总人数 + 分部门人数。
+        返回 dict：{"total": int, "by_department": [(department, count), ...]}
+        """
+        conn = get_connection()
+        try:
+            with conn.cursor() as cur:
+                cur.execute("SELECT COUNT(*) FROM employee WHERE is_archived = %s", (0,))
+                total = cur.fetchone()[0]
+                cur.execute(
+                    "SELECT department, COUNT(*) AS cnt FROM employee "
+                    "WHERE is_archived = %s GROUP BY department ORDER BY cnt DESC",
+                    (0,),
+                )
+                by_dept = cur.fetchall()
+            return {"total": total, "by_department": by_dept}
         finally:
             conn.close()
