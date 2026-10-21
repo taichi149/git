@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}确认归档 - {{ employee.name }}{% endblock %}
+
+{% block content %}
+<h1>确认归档员工</h1>
+
+<div class="card">
+    <div class="warn-box">
+        归档后该员工将从在职列表中隐藏，但<b>记录不会被删除</b>（软删除），之后可以恢复。
+    </div>
+
+    <dl class="detail">
+        <dt>工号</dt><dd>{{ employee.employee_id }}</dd>
+        <dt>姓名</dt><dd>{{ employee.name }}</dd>
+        <dt>岗位</dt><dd>{{ employee.position or '-' }}</dd>
+        <dt>部门</dt><dd>{{ employee.department or '-' }}</dd>
+    </dl>
+
+    <form method="post" action="{{ url_for('ui.employee_archive', emp_pk=employee.id) }}">
+        <div class="actions-row">
+            <button class="btn btn-danger" type="submit">确认归档</button>
+            <a class="btn" href="{{ url_for('ui.employee_detail', emp_pk=employee.id) }}">取消</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

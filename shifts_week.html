@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% block title %}全店排班 - 美体商城员工管理系统{% endblock %}
+
+{% block content %}
+<h1>全店排班（{{ monday }} ~ {{ sunday }}）</h1>
+
+<div class="toolbar">
+    <div class="week-nav">
+        <a class="btn" href="{{ url_for('ui.shifts_week', week=prev_week) }}">← 上一周</a>
+        <a class="btn" href="{{ url_for('ui.shifts_week', week=this_week) }}">本周</a>
+        <a class="btn" href="{{ url_for('ui.shifts_week', week=next_week) }}">下一周 →</a>
+    </div>
+    <div class="spacer"></div>
+    {% if can_edit %}
+    <a class="btn btn-primary" href="{{ url_for('ui.shift_assign') }}">+ 排班</a>
+    {% endif %}
+</div>
+
+<div class="card" style="padding: 0; overflow-x: auto;">
+    <table>
+        <thead>
+            <tr>
+                <th>员工</th>
+                {% for day in days %}
+                <th>{{ weekdays_cn[loop.index0] }}<br>{{ day.strftime('%m-%d') }}</th>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in rows %}
+            <tr>
+                <td style="white-space: nowrap;">
+                    <a href="{{ url_for('ui.employee_shifts', emp_pk=row.employee.id) }}">
+                        {{ row.employee.name }}
+                    </a>
+                    <span class="muted">{{ row.employee.employee_id }}</span>
+                </td>
+                {% for day in days %}
+                <td class="shift-cell">
+                    {% set s = row.cells.get(day) %}
+                    {% if s %}
+                    <span class="tag tag-{{ s.shift_type }}">{{ labels[s.shift_type] }}</span>
+                    {% if can_edit %}
+                    <form method="post" action="{{ url_for('ui.shift_delete', shift_id=s.id) }}">
+                        <input type="hidden" name="next"
+                               value="{{ url_for('ui.shifts_week', week=monday.isoformat()) }}">
+                        <button class="link-del" type="submit" title="删除这条排班">×</button>
+                    </form>
+                    {% endif %}
+                    {% else %}
+                    {% if can_edit %}
+                    <a class="muted" style="font-size: 12px;"
+                       href="{{ url_for('ui.shift_assign', emp_pk=row.employee.id, date=day.isoformat()) }}"
+                       title="给 {{ row.employee.name }} 排这一天的班">+ 排班</a>
+                    {% else %}
+                    <span class="muted">—</span>
+                    {% endif %}
+                    {% endif %}
+                </td>
+                {% endfor %}
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="8" class="empty">暂无在职员工，先到员工列表录入员工。</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<p class="muted" style="margin-top: 12px;">
+    <span class="tag tag-Morning">早班</span>
+    <span class="tag tag-Afternoon">中班</span>
+    <span class="tag tag-Evening">晚班</span>
+    &nbsp;点击员工姓名可查看 TA 的个人排班；空格点「+ 排班」可直接给该员工排那一天。
+</p>
+{% endblock %}
