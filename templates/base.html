@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}美体商城员工管理系统{% endblock %}</title>
+    <style>
+        :root {
+            --brand: #2f6feb;
+            --bg: #f5f6f8;
+            --card: #ffffff;
+            --line: #e3e6ec;
+            --text: #1f2430;
+            --muted: #6b7280;
+            --danger: #d64545;
+            --ok: #2e9e63;
+        }
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            font-family: "Microsoft YaHei", "PingFang SC", Segoe UI, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            font-size: 14px;
+        }
+        header.topbar {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+            padding: 0 24px;
+            height: 56px;
+            background: var(--card);
+            border-bottom: 1px solid var(--line);
+        }
+        .brand { font-weight: 600; font-size: 16px; color: var(--brand); }
+        .topbar nav { display: flex; gap: 16px; flex: 1; }
+        .topbar nav a { color: var(--text); text-decoration: none; }
+        .topbar nav a:hover { color: var(--brand); }
+        .me { color: var(--muted); }
+        .me a { margin-left: 10px; color: var(--brand); text-decoration: none; }
+        main { max-width: 1080px; margin: 24px auto 64px; padding: 0 24px; }
+        h1 { font-size: 20px; margin: 0 0 16px; }
+        .card {
+            background: var(--card);
+            border: 1px solid var(--line);
+            border-radius: 10px;
+            padding: 18px 20px;
+        }
+        .toolbar { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; margin-bottom: 16px; }
+        .toolbar .spacer { flex: 1; }
+        input[type="text"], input[type="number"], input[type="email"], input[type="password"],
+        input[type="date"], select {
+            height: 34px;
+            padding: 0 10px;
+            border: 1px solid var(--line);
+            border-radius: 6px;
+            font-size: 14px;
+            background: #fff;
+            min-width: 220px;
+        }
+        input:focus { outline: 2px solid rgba(47, 111, 235, .25); border-color: var(--brand); }
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            height: 34px;
+            padding: 0 14px;
+            border-radius: 6px;
+            border: 1px solid var(--line);
+            background: #fff;
+            color: var(--text);
+            text-decoration: none;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .btn:hover { border-color: var(--brand); color: var(--brand); }
+        .btn-primary { background: var(--brand); border-color: var(--brand); color: #fff; }
+        .btn-primary:hover { background: #2559c4; color: #fff; }
+        .btn-danger { border-color: var(--danger); color: var(--danger); }
+        .btn-danger:hover { background: var(--danger); color: #fff; }
+        .btn-sm { height: 28px; padding: 0 10px; font-size: 13px; }
+        table { width: 100%; border-collapse: collapse; background: var(--card); }
+        th, td { padding: 10px 12px; border-bottom: 1px solid var(--line); text-align: left; }
+        th { background: #fafbfc; color: var(--muted); font-weight: 500; white-space: nowrap; }
+        tr:hover td { background: #fafbfd; }
+        td.actions { white-space: nowrap; }
+        td.actions a, td.actions form { display: inline-block; margin-right: 6px; }
+        td.actions form { margin: 0; }
+        .muted { color: var(--muted); }
+        .empty { text-align: center; color: var(--muted); padding: 36px 0; }
+        .flash { list-style: none; padding: 0; margin: 0 0 16px; }
+        .flash li { padding: 10px 14px; border-radius: 8px; margin-bottom: 8px; border: 1px solid; }
+        .flash .success { background: #eef8f2; border-color: #bfe6d0; color: #1f7a4c; }
+        .flash .error { background: #fdf0f0; border-color: #f3c9c9; color: #a52a2a; }
+        .flash .info { background: #eef4fe; border-color: #c9dcfb; color: #2559c4; }
+        .form-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px 24px; }
+        .field label { display: block; margin-bottom: 6px; color: var(--muted); }
+        .field input { width: 100%; }
+        .field .err { color: var(--danger); font-size: 12px; margin-top: 4px; }
+        .field.req label::after { content: " *"; color: var(--danger); }
+        .actions-row { display: flex; gap: 10px; margin-top: 22px; }
+        dl.detail { display: grid; grid-template-columns: 160px 1fr; gap: 10px 16px; margin: 0; }
+        dl.detail dt { color: var(--muted); }
+        dl.detail dd { margin: 0; }
+        .tag { display: inline-block; padding: 1px 8px; border-radius: 10px; font-size: 12px; }
+        .tag-ok { background: #eef8f2; color: #1f7a4c; }
+        .tag-off { background: #f1f2f4; color: #6b7280; }
+        /* M4 排班：三种班次各一个颜色，一眼区分开 */
+        .tag-Morning { background: #fff7e6; color: #ad6800; }
+        .tag-Afternoon { background: #e6f4ff; color: #0958d9; }
+        .tag-Evening { background: #f9f0ff; color: #531dab; }
+        .shift-cell { min-width: 96px; }
+        .shift-cell form { display: inline; }
+        .link-del { border: none; background: none; color: var(--muted); cursor: pointer; font-size: 12px; padding: 0 2px; }
+        .link-del:hover { color: var(--danger); }
+        .week-nav { display: flex; gap: 8px; align-items: center; }
+        .field select { width: 100%; }
+        .warn-box { border: 1px solid #f3c9c9; background: #fdf0f0; border-radius: 8px; padding: 14px 16px; margin-bottom: 18px; }
+    </style>
+</head>
+<body>
+<header class="topbar">
+    <div class="brand">美体商城 · 员工管理系统</div>
+    <nav>
+        <a href="{{ url_for('ui.employee_list') }}">员工列表</a>
+        <a href="{{ url_for('ui.shifts_week') }}">全店排班</a>
+        {% if session.get('role') == 'HRAdmin' %}
+        <a href="{{ url_for('ui.employee_new') }}">新增员工</a>
+        <a href="{{ url_for('ui.shift_assign') }}">排班</a>
+        {% endif %}
+    </nav>
+    <div class="me">
+        {{ session.get('username', '') }}（{{ session.get('role', '') }}）
+        <a href="{{ url_for('ui.logout') }}">退出</a>
+    </div>
+</header>
+<main>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <ul class="flash">
+            {% for category, message in messages %}
+            <li class="{{ category }}">{{ message }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+    {% endwith %}
+    {% block content %}{% endblock %}
+</main>
+</body>
+</html>

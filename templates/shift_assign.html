@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block title %}手动排班 - 美体商城员工管理系统{% endblock %}
+
+{% block content %}
+<h1>手动排班</h1>
+
+<div class="card" style="max-width: 560px;">
+    <form method="post">
+        <div class="form-grid" style="grid-template-columns: 1fr;">
+
+            <div class="field req">
+                <label>员工</label>
+                <select name="emp_pk">
+                    <option value="">-- 请选择员工 --</option>
+                    {% for e in employees %}
+                    <option value="{{ e.id }}"
+                        {% if form.emp_pk|string == e.id|string %}selected{% endif %}>
+                        {{ e.employee_id }} · {{ e.name }}{% if e.position %}（{{ e.position }}）{% endif %}
+                    </option>
+                    {% endfor %}
+                </select>
+                {% if errors.emp_pk %}<div class="err">{{ errors.emp_pk }}</div>{% endif %}
+            </div>
+
+            <div class="field req">
+                <label>日期</label>
+                <input type="date" name="shift_date" value="{{ form.shift_date }}">
+                {% if errors.shift_date %}<div class="err">{{ errors.shift_date }}</div>{% endif %}
+            </div>
+
+            <div class="field req">
+                <label>班次</label>
+                <select name="shift_type">
+                    <option value="">-- 请选择班次 --</option>
+                    {% for code, label in shift_types %}
+                    <option value="{{ code }}"
+                        {% if form.shift_type == code %}selected{% endif %}>{{ label }}</option>
+                    {% endfor %}
+                </select>
+                {% if errors.shift_type %}<div class="err">{{ errors.shift_type }}</div>{% endif %}
+            </div>
+
+        </div>
+
+        <div class="actions-row">
+            <button class="btn btn-primary" type="submit">保存排班</button>
+            <a class="btn" href="{{ url_for('ui.shifts_week') }}">取消</a>
+        </div>
+    </form>
+</div>
+
+<p class="muted" style="margin-top: 12px;">
+    提示：同一员工同一天只能有一个班。如果这一天已经排过班，再次保存会覆盖旧班次，相当于「改班」。
+    已归档的员工不会出现在员工下拉里。
+</p>
+{% endblock %}
