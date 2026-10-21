@@ -1,22 +1,49 @@
-<!DOCTYPE html>
-<html lang="zh">
-<head>
-    <meta charset="UTF-8">
-    <title>员工总览 - 美体商城员工管理系统</title>
-</head>
-<body>
-    <h1>员工总览</h1>
-    <p><a href="/">返回首页</a> | <a href="/logout">退出登录</a></p>
-    <table border="1" cellpadding="6" cellspacing="0">
+{% extends "base.html" %}
+{% block title %}员工总览 - 美体商城员工管理系统{% endblock %}
+
+{% block content %}
+<h1>{% if archived %}已归档员工{% else %}员工总览{% endif %}</h1>
+
+<div class="toolbar">
+    <form method="get" action="{{ url_for('ui.employee_list') }}">
+        {% if archived %}<input type="hidden" name="archived" value="1">{% endif %}
+        <input type="text" name="q" value="{{ keyword }}"
+               placeholder="搜索姓名 / 工号 / 岗位 / 部门 / 邮箱 / 地址">
+        <button class="btn" type="submit">搜索</button>
+        {% if keyword %}
+        <a class="btn" href="{{ url_for('ui.employee_list', archived=1 if archived else None) }}">清除</a>
+        {% endif %}
+    </form>
+
+    <div class="spacer"></div>
+
+    {% if archived %}
+    <a class="btn" href="{{ url_for('ui.employee_list') }}">← 返回在职员工</a>
+    {% else %}
+    <a class="btn" href="{{ url_for('ui.employee_list', archived=1) }}">查看已归档</a>
+    {% endif %}
+
+    {% if can_edit and not archived %}
+    <a class="btn btn-primary" href="{{ url_for('ui.employee_new') }}">+ 新增员工</a>
+    {% endif %}
+</div>
+
+{% if keyword %}
+<p class="muted">关键词「{{ keyword }}」共匹配 {{ employees|length }} 条记录。</p>
+{% endif %}
+
+<div class="card" style="padding: 0; overflow: hidden;">
+    <table>
         <thead>
             <tr>
-                <th>员工ID</th>
+                <th>工号</th>
                 <th>姓名</th>
                 <th>年龄</th>
                 <th>岗位</th>
                 <th>部门</th>
                 <th>邮箱</th>
                 <th>薪资</th>
+                <th>操作</th>
             </tr>
         </thead>
         <tbody>
@@ -24,16 +51,44 @@
             <tr>
                 <td>{{ e.employee_id }}</td>
                 <td>{{ e.name }}</td>
-                <td>{{ e.age }}</td>
-                <td>{{ e.position }}</td>
-                <td>{{ e.department }}</td>
-                <td>{{ e.email }}</td>
-                <td>{{ e.salary }}</td>
+                <td>{{ e.age if e.age is not none else '-' }}</td>
+                <td>{{ e.position or '-' }}</td>
+                <td>{{ e.department or '-' }}</td>
+                <td>{{ e.email or '-' }}</td>
+                <td>{{ '%.2f'|format(e.salary) if e.salary is not none else '-' }}</td>
+                <td class="actions">
+                    <a class="btn btn-sm" href="{{ url_for('ui.employee_detail', emp_pk=e.id) }}">详情</a>
+                    <a class="btn btn-sm" href="{{ url_for('ui.employee_shifts', emp_pk=e.id) }}">排班</a>
+                    {% if can_edit %}
+                        {% if archived %}
+                        <form method="post" action="{{ url_for('ui.employee_restore', emp_pk=e.id) }}">
+                            <button class="btn btn-sm" type="submit">恢复</button>
+                        </form>
+                        {% else %}
+                        <a class="btn btn-sm" href="{{ url_for('ui.employee_edit', emp_pk=e.id) }}">编辑</a>
+                        <a class="btn btn-sm btn-danger" href="{{ url_for('ui.employee_archive', emp_pk=e.id) }}">归档</a>
+                        {% endif %}
+                    {% endif %}
+                </td>
             </tr>
             {% else %}
-            <tr><td colspan="7">暂无员工记录</td></tr>
+            <tr>
+                <td colspan="8" class="empty">
+                    {% if keyword %}
+                    没有匹配「{{ keyword }}」的员工。
+                    {% elif archived %}
+                    还没有被归档的员工。
+                    {% else %}
+                    暂无员工记录，点击右上角「+ 新增员工」开始录入。
+                    {% endif %}
+                </td>
+            </tr>
             {% endfor %}
         </tbody>
     </table>
-</body>
-</html>
+</div>
+
+<p class="muted" style="margin-top: 12px;">
+    共 {{ employees|length }} 条记录。归档为软删除：记录保留在数据库中，只是从在职列表隐藏，可随时恢复。
+</p>
+{% endblock %}
