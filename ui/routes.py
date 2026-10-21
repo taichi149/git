@@ -1,8 +1,13 @@
 # 文件：ui/routes.py
 # UI 层：路由，只负责界面展示交互，不在这里写 SQL
 
+import re
+
 from flask import Blueprint, redirect, render_template, request, session, url_for
 from werkzeug.security import check_password_hash
+
+# 邮箱格式校验（FR15 员工自助改邮箱用）
+EMAIL_RE = re.compile(r"^[A-Za-z0-9_.+-]+@[A-Za-z0-9-]+\.[A-Za-z0-9-.]+$")
 
 from dal.employee_dao import EmployeeDAO
 from dal.user_dao import UserDAO
@@ -53,12 +58,37 @@ def employee_list():
     return render_template("employees.html", employees=employees)
 
 
-@ui_bp.route("/profile")
+@ui_bp.route("/profile", methods=["GET", "POST"])
 @login_required
 def profile():
-    """员工个人主页（M2 占位；FR14 完整档案在 M5 实现）。"""
+    """FR14 查看本人档案 + FR15 修改邮箱/地址/紧急联系人。"""
+    employee = EmployeeDAO.get_by_username(session.get("username"))
+    if employee is None:
+        return "未找到你的员工档案，请联系 HR 确认登录账号与员工邮箱前缀一致", 404
+
+    error = None
+    success = None
+    if request.method == "POST":
+        email = request.form.get("email", "").strip()
+        contact_address = request.form.get("contact_address", "").strip()
+        emergency_contact = request.form.get("emergency_contact", "").strip()
+        if not EMAIL_RE.match(email):
+            error = "邮箱格式不合法，请输入如 user@example.com"
+        else:
+            EmployeeDAO.update_self(employee.id, email, contact_address, emergency_contact)
+            success = "保存成功"
+            employee = EmployeeDAO.get_by_username(session.get("username"))
+
+    return render_template("profile.html", employee=employee, error=error, success=success)
+
+
+@ui_bp.route("/statistics")
+@role_required("StoreManager", "HRAdmin")
+def statistics():
+    """FR12 统计：员工总人数 + 分部门人数。"""
+    stats = EmployeeDAO.get_statistics()
     return render_template(
-        "profile.html",
-        username=session.get("username"),
-        role=session.get("role"),
+        "statistics.html",
+        total=stats["total"],
+        by_dept=stats["by_department"],
     )
