@@ -572,6 +572,35 @@ def employee_shifts(emp_pk):
 
 
 # ----------------------------------------------------------------------
+# FR13：员工查看本人排班（仅登录员工，只能看自己的班次）
+# ----------------------------------------------------------------------
+@ui_bp.route("/my-shifts")
+@login_required
+def my_shifts():
+    """FR13 本人排班：员工登录后查看自己某周的排班，看不到别人的班。"""
+    employee = EmployeeDAO.get_by_username(session.get("username"))
+    if employee is None:
+        return "未找到你的员工档案，请联系 HR 确认登录账号与员工邮箱前缀一致", 404
+
+    monday, sunday = _week_range(request.args.get("week"))
+    days = [monday + timedelta(days=i) for i in range(7)]
+    shifts = ShiftDAO.get_by_employee_range(employee.id, monday, sunday)
+    cells = {s.shift_date: s for s in shifts}
+
+    return render_template(
+        "my_shifts.html",
+        employee=employee,
+        days=days,
+        cells=cells,
+        monday=monday,
+        sunday=sunday,
+        weekdays_cn=WEEKDAYS_CN,
+        labels=SHIFT_TYPE_LABELS,
+        **_week_nav(monday),
+    )
+
+
+# ----------------------------------------------------------------------
 # 删除排班（仅 HRAdmin；删除后跳回原来的页面）
 # ----------------------------------------------------------------------
 @ui_bp.route("/shifts/<int:shift_id>/delete", methods=["POST"])

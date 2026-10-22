@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>我的排班 - 美体商城员工管理系统</title>
+</head>
+<body>
+    <h1>我的排班</h1>
+    <p>{{ employee.name }}（{{ employee.employee_id }}）</p>
+
+    <p>
+        <a href="{{ url_for('ui.my_shifts', week=prev_week) }}">← 上一周</a>
+        <a href="{{ url_for('ui.my_shifts', week=this_week) }}">本周</a>
+        <a href="{{ url_for('ui.my_shifts', week=next_week) }}">下一周 →</a>
+        <span style="color:#888">{{ monday }} ~ {{ sunday }}</span>
+    </p>
+
+    <table border="1" cellpadding="8">
+        <tr>
+            {% for day in days %}
+            <th>{{ weekdays_cn[loop.index0] }}<br>{{ day.strftime('%m-%d') }}</th>
+            {% endfor %}
+        </tr>
+        <tr>
+            {% for day in days %}
+            <td align="center">
+                {% set s = cells.get(day) %}
+                {% if s %}{{ labels[s.shift_type] }}{% else %}<span style="color:#888">休息</span>{% endif %}
+            </td>
+            {% endfor %}
+        </tr>
+    </table>
+
+    <p style="color:#888">本周共排班 {{ cells|length }} 天。</p>
+
+    <p><a href="{{ url_for('ui.profile') }}">返回我的档案</a> | <a href="/logout">退出登录</a></p>
+</body>
+</html>
