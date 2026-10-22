@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Scrum 看板 — 美体商城员工管理系统</title>
+<style>
+  :root {
+    --todo: #f59e0b;
+    --doing: #3b82f6;
+    --done: #10b981;
+    --ink: #1f2937;
+    --muted: #6b7280;
+    --line: #e5e7eb;
+    --bg: #f3f4f6;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, "Segoe UI", "Microsoft YaHei", "PingFang SC", sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    padding: 28px;
+  }
+  .page { max-width: 1280px; margin: 0 auto; }
+  .header { margin-bottom: 20px; }
+  .header h1 { font-size: 24px; letter-spacing: .5px; }
+  .header .sub { color: var(--muted); font-size: 14px; margin-top: 6px; }
+  .meta {
+    display: flex; flex-wrap: wrap; gap: 10px; margin-top: 12px;
+  }
+  .chip {
+    font-size: 12px; color: #374151; background: #fff;
+    border: 1px solid var(--line); border-radius: 999px; padding: 4px 12px;
+  }
+  .board {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; align-items: start;
+  }
+  .col {
+    background: #eceef1; border-radius: 12px; padding: 12px;
+  }
+  .col-head {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 6px 8px 12px;
+  }
+  .col-title { font-size: 15px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+  .dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+  .count {
+    font-size: 12px; font-weight: 600; color: var(--muted);
+    background: #fff; border: 1px solid var(--line); border-radius: 999px; padding: 2px 10px;
+  }
+  .col.todo .dot { background: var(--todo); }
+  .col.doing .dot { background: var(--doing); }
+  .col.done .dot { background: var(--done); }
+  .cards { display: flex; flex-direction: column; gap: 10px; }
+  .card {
+    background: #fff; border: 1px solid var(--line); border-radius: 10px;
+    padding: 12px 14px; box-shadow: 0 1px 2px rgba(0,0,0,.04);
+  }
+  .card .title { font-size: 14px; font-weight: 600; line-height: 1.35; }
+  .card .desc { font-size: 12px; color: var(--muted); margin-top: 4px; line-height: 1.5; }
+  .tags { margin-top: 8px; display: flex; flex-wrap: wrap; gap: 6px; }
+  .tag {
+    font-size: 11px; font-weight: 600; border-radius: 6px; padding: 2px 8px;
+  }
+  .tag.fr  { background: #eef2ff; color: #4f46e5; }
+  .tag.mst { background: #fef3c7; color: #b45309; }
+  .tag.shd { background: #dbeafe; color: #1d4ed8; }
+  .tag.cld { background: #f3e8ff; color: #7e22ce; }
+  .tag.doc { background: #e0f2fe; color: #0369a1; }
+  .footer { margin-top: 18px; color: var(--muted); font-size: 12px; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="header">
+    <h1>Scrum 看板 · 美体商城员工管理系统</h1>
+    <div class="sub">Pro B 团队 · 瀑布规划 → 迭代交付（M0–M6）</div>
+    <div class="meta">
+      <span class="chip">团队：张绍康 / 张钰杰 / 钟昌霖 / 程祥睿 / 程麒天</span>
+      <span class="chip">仓库：github.com/taichi149/git</span>
+      <span class="chip">当前 Sprint：Sprint 6（测试 + 交付）</span>
+    </div>
+  </div>
+
+  <div class="board">
+
+    <!-- To Do -->
+    <div class="col todo">
+      <div class="col-head">
+        <div class="col-title"><span class="dot"></span>To Do · 待办</div>
+        <span class="count">7</span>
+      </div>
+      <div class="cards">
+        <div class="card">
+          <div class="title">测试用例文档</div>
+          <div class="desc">覆盖 FR01–FR15，表格：用例ID / 前置条件 / 步骤 / 预期 / 实际</div>
+          <div class="tags"><span class="tag doc">文档</span></div>
+        </div>
+        <div class="card">
+          <div class="title">测试报告</div>
+          <div class="desc">整理 m3_smoke_test / m4_smoke_test 运行结果</div>
+          <div class="tags"><span class="tag doc">文档</span></div>
+        </div>
+        <div class="card">
+          <div class="title">UML 类图导出</div>
+          <div class="desc">PlantUML 源已完成，导出 PNG 并归档</div>
+          <div class="tags"><span class="tag doc">文档</span></div>
+        </div>
+        <div class="card">
+          <div class="title">Scrum 看板同步</div>
+          <div class="desc">同步到 GitHub Projects 或 Trello</div>
+          <div class="tags"><span class="tag doc">过程</span></div>
+        </div>
+        <div class="card">
+          <div class="title">文档进 Git</div>
+          <div class="desc">Project Plan / URS / Test Plan / 类图 / 测试用例 → docs/</div>
+          <div class="tags"><span class="tag doc">Git</span></div>
+        </div>
+        <div class="card">
+          <div class="title">清理误传空文件</div>
+          <div class="desc">删除 新建文本文档.txt</div>
+          <div class="tags"><span class="tag doc">Git</span></div>
+        </div>
+        <div class="card">
+          <div class="title">代码注释 FR 编号对齐</div>
+          <div class="desc">让注释里的 FR 编号与 URS 一致</div>
+          <div class="tags"><span class="tag doc">代码</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- In Progress -->
+    <div class="col doing">
+      <div class="col-head">
+        <div class="col-title"><span class="dot"></span>In Progress · 进行中</div>
+        <span class="count">1</span>
+      </div>
+      <div class="cards">
+        <div class="card">
+          <div class="title">FR13 员工查看本人排班</div>
+          <div class="desc">/my-shifts 路由 + 模板已补，待 commit 到 main</div>
+          <div class="tags"><span class="tag fr">FR13</span><span class="tag shd">Should</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Done -->
+    <div class="col done">
+      <div class="col-head">
+        <div class="col-title"><span class="dot"></span>Done · 已完成</div>
+        <span class="count">8</span>
+      </div>
+      <div class="cards">
+        <div class="card">
+          <div class="title">三层架构基础框架</div>
+          <div class="desc">model / dal / ui / templates 分层</div>
+          <div class="tags"><span class="tag fr">M0–M1</span></div>
+        </div>
+        <div class="card">
+          <div class="title">登录认证 + 角色访问控制</div>
+          <div class="desc">密码哈希存储，HR / 经理 / 员工三角色权限</div>
+          <div class="tags"><span class="tag fr">FR09</span><span class="tag mst">Must</span></div>
+        </div>
+        <div class="card">
+          <div class="title">员工增删改查 + 软归档</div>
+          <div class="desc">新增 / 修改 / 归档恢复 / 检索 / 详情 / 部门</div>
+          <div class="tags"><span class="tag fr">FR01–08</span><span class="tag mst">Must</span></div>
+        </div>
+        <div class="card">
+          <div class="title">手动排班</div>
+          <div class="desc">分配班次 + 全店周视图 + 个人视图</div>
+          <div class="tags"><span class="tag fr">FR10–11</span><span class="tag shd">Should</span></div>
+        </div>
+        <div class="card">
+          <div class="title">员工自助</div>
+          <div class="desc">查看档案 + 修改邮箱/地址/紧急联系人</div>
+          <div class="tags"><span class="tag fr">FR14–15</span></div>
+        </div>
+        <div class="card">
+          <div class="title">统计看板</div>
+          <div class="desc">员工总人数 + 分部门人数</div>
+          <div class="tags"><span class="tag fr">FR12</span><span class="tag cld">Could</span></div>
+        </div>
+        <div class="card">
+          <div class="title">数据库三表 + 种子数据</div>
+          <div class="desc">employee / user / shift</div>
+          <div class="tags"><span class="tag doc">DB</span></div>
+        </div>
+        <div class="card">
+          <div class="title">main 分支合并收口</div>
+          <div class="desc">合并 feature(M4+M5) 并推送 origin/main</div>
+          <div class="tags"><span class="tag doc">Git</span></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="footer">看板本体可同步到 GitHub Projects / Trello，本页用于截图留档（截图后放入 docs/）。</div>
+</div>
+</body>
+</html>

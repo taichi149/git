@@ -1,0 +1,46 @@
+' UML Class Diagram — Meiti Shangcheng Employee Management System (Pro B)
+' 3 classes, aggregation only (hollow diamond), language-agnostic
+' Maps to URS FR01-FR15 / UC01-UC08
+' Render: https://www.plantuml.com/plantuml  or  draw.io (Insert > Advanced > PlantUML)
+
+@startuml
+class EmployeeManager {
+  - employeeList : List[Employee]
+  + addEmployee(employee : Employee) : bool
+  + editEmployee(employee : Employee) : bool
+  + removeEmployee(employeeId : str) : bool
+  + searchEmployee(keyword : str) : List[Employee]
+  + viewEmployee(employeeId : str) : Employee
+  + viewEmployeeList() : List[Employee]
+  + assignDepartment(employeeId : str, department : str) : bool
+  + assignShift(employeeId : str, date : str, shiftType : str) : bool
+  + viewSchedule() : List[Shift]
+  + viewStatistics() : str
+}
+
+class Employee {
+  - id : int
+  - employeeId : str
+  - name : str
+  - age : int
+  - position : str
+  - salary : float
+  - department : str
+  - email : str
+  - contactAddress : str
+  - emergencyContact : str
+  - isArchived : bool
+  + updateProfile(email : str, address : str, emergencyContact : str) : bool
+  + viewMySchedule() : List[Shift]
+}
+
+class Shift {
+  - id : int
+  - employeeId : str
+  - shiftDate : str
+  - shiftType : str
+}
+
+EmployeeManager "1" o-- "*" Employee : manages
+Employee "1" o-- "*" Shift : has
+@enduml
